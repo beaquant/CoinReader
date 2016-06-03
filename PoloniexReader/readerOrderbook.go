@@ -81,7 +81,7 @@ func (ths *PReader) decodeAsksOB(flag *sync.WaitGroup, list []interface{}) {
     defer flag.Done()
     relLen := len(list)
     sellList := make([]*Reader.OrderBook, relLen)
-    ths.Orders["Sell"] = sellList
+    ths.Orders[Reader.OrderSellStringKey] = sellList
     for index := 0; index < relLen; index++ {
         itm := list[index].([]interface{})
         ob := &Reader.OrderBook{}
@@ -96,7 +96,7 @@ func (ths *PReader) decodeBidsOB(flag *sync.WaitGroup, list []interface{}) {
     defer flag.Done()
     relLen := len(list)
     buyList := make([]*Reader.OrderBook, relLen)
-    ths.Orders["Buy"] = buyList
+    ths.Orders[Reader.OrderBuyStringKey] = buyList
     for index := 0; index < relLen; index++ {
         itm := list[index].([]interface{})
         ob := &Reader.OrderBook{}
