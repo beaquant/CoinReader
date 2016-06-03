@@ -26,3 +26,11 @@ func (ths *PReader) Init(m, c string) {
     ths.OrderDepth = 20
     ths.Historys = nil
 }
+
+//ReadAll Read all of history and order datas
+func (ths *PReader) ReadAll() bool {
+    if ths.ReadOrderbook() && ths.ReadHistory() {
+        return true
+    }
+    return false
+}

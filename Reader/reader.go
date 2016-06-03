@@ -2,6 +2,7 @@ package Reader
 
 
 type ReaderInterface interface {
+    ReadAll() bool
     ReadHistory() bool
     PrintHistory(length int) string
     ReadOrderbook() bool
