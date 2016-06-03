@@ -17,8 +17,12 @@ type B38Reader struct {
 }
 
 // Init init parameters
-func (ths *B38Reader) Init(m, c string) {
-    ths.ReaderDef.Init(m,c)
+func (ths *B38Reader) Init(m, c string, v ... interface{}) {
+    if len(v) > 0 {
+        ths.ReaderDef.Init(m,c,v[0])
+    } else {
+        ths.ReaderDef.Init(m,c)
+    }
     ths.BaseAddress = "http://www.btc38.com/"
     ths.Historys = nil
 }

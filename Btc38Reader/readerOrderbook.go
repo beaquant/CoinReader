@@ -31,9 +31,21 @@ func (ths *B38Reader) readOrderBook(mon, coin string) (map[string]interface{},er
     curRand := rand.New(rand.NewSource(time.Now().UnixNano()))
     address := ths.BaseAddress + fmt.Sprintf("trade/getTradeList30.php?mk_type=%s&coinname=%s&n=0.00%d1",
         mon, coin, curRand.Int31())
-    ret,err := rhttp.HttpGet(address,rhttp.HTTP_RETURN_TYPE_MAP)
-    if err != nil {
-        return nil,err
+    if len(ths.ProxyPort) == 0 {
+        ths.ProxyPort = "8181"
+    }
+    var ret interface{}
+    var err error
+    if len(ths.ProxyAddress) > 0 {
+        ret,err = rhttp.HttpProxyGet(address,ths.ProxyAddress,ths.ProxyPort,rhttp.HTTP_RETURN_TYPE_MAP)
+        if err != nil {
+            return nil,err
+        }
+    } else {
+        ret,err = rhttp.HttpGet(address,rhttp.HTTP_RETURN_TYPE_MAP)
+        if err != nil {
+            return nil,err
+        }
     }
     return ret.(map[string]interface{}),nil
 }

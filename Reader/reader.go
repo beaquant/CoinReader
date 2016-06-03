@@ -1,6 +1,5 @@
 package Reader
 
-
 type ReaderInterface interface {
     ReadAll() bool
     ReadHistory() bool
@@ -16,16 +15,31 @@ type ReaderDef struct {
     CoinName     string
     
     Orders   map[string][]*OrderBook
+    
+    ProxyAddress string // proxy server address. If not set, proxy is not be used.
+    ProxyPort    string // proxy server port. If not set, 8181 is default.
 }
 
 // Init init parameters
 // m is MonetaryName string
 // c is CoinName string
-func (ths *ReaderDef) Init(m, c string) {
+// v is optional parameters, Set the parameter order described below:
+//  v[0] -- proxyAddress string
+//  v[1] -- proxyPort string
+func (ths *ReaderDef) Init(m, c string, v ... interface{}) {
     ths.MonetaryName = m
     ths.CoinName = c
     
     ths.Orders = make(map[string][]*OrderBook)
     ths.Orders[OrderBuyStringKey] = nil
     ths.Orders[OrderSellStringKey] = nil
+        
+        
+    vLen := len(v)
+    if vLen >= 1 {
+        ths.ProxyAddress = v[0].(string)
+    }
+    if vLen >= 2 {
+        ths.ProxyPort = v[1].(string)
+    }
 }
