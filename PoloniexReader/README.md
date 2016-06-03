@@ -1,4 +1,4 @@
-# Go console poloniex datas reader
+# Go poloniex datas reader
 
 *Description: This library for readout history trade datas and orders from https://poloniex.com
 
@@ -6,7 +6,7 @@
 
 
 ```shell
-go get github.com/jojopoper/PoloniexReader
+go get -u github.com/jojopoper/CoinReader/PoloniexReader/...
 ```
 
 ## Usage
