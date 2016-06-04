@@ -21,11 +21,7 @@ type PReader struct {
 
 // Init init parameters
 func (ths *PReader) Init(m, c string, v ... interface{}) {
-    // if len(v) > 0 {
-        ths.ReaderDef.Init(m,c,v...)
-    // } else {
-    //     ths.ReaderDef.Init(m,c)
-    // }
+    ths.ReaderDef.Init(m,c,v...)
     ths.BaseAddress = "https://poloniex.com/"
     ths.OrderDepth = 20
     ths.Historys = nil
