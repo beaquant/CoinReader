@@ -33,13 +33,22 @@ func (ths *ReaderDef) Init(m, c string, v ... interface{}) {
     ths.Orders = make(map[string][]*OrderBook)
     ths.Orders[OrderBuyStringKey] = nil
     ths.Orders[OrderSellStringKey] = nil
-        
-        
+    
     vLen := len(v)
     if vLen >= 1 {
-        ths.ProxyAddress = v[0].(string)
+        switch v[0].(type) {
+        case string:
+            ths.ProxyAddress = v[0].(string)
+        default:
+            panic("First parameter(ProxyAddress) must be string!")
+        }
     }
     if vLen >= 2 {
-        ths.ProxyPort = v[1].(string)
+        switch v[1].(type) {
+        case string:
+            ths.ProxyPort = v[1].(string)
+        default:
+            panic("First parameter(ProxyPort) must be string!")
+        }
     }
 }
