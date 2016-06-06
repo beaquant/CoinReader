@@ -44,12 +44,9 @@ func (ths *PReader) PrintHistory(length int) string {
 
 func (ths *PReader) readHistory(mon, coin string) ([]interface{},error) {
     address := ths.BaseAddress + fmt.Sprintf("public?command=returnTradeHistory&currencyPair=%s_%s",mon,coin)
-    if len(ths.ProxyPort) == 0 {
-        ths.ProxyPort = "8181"
-    }
     var ret interface{}
     var err error
-    if len(ths.ProxyAddress) > 0 {
+    if ths.UseProxy() {
         // fmt.Printf("Proxy Address[%s] Port[%s] \r\n",ths.ProxyAddress,ths.ProxyPort)
         ret,err = rhttp.HttpProxyGet(address,ths.ProxyAddress,ths.ProxyPort,rhttp.HTTP_RETURN_TYPE_SLICE)
         if err != nil {

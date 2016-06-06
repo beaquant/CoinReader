@@ -20,12 +20,9 @@ func (ths *PReader) ReadOrderbook() bool {
 func (ths *PReader) readOrderBook(mon, coin string) (map[string]interface{},error) {
     address := ths.BaseAddress + fmt.Sprintf("public?command=returnOrderBook&depth=%d&currencyPair=%s_%s",
         ths.OrderDepth, mon, coin)
-    if len(ths.ProxyPort) == 0 {
-        ths.ProxyPort = "8181"
-    }
     var ret interface{}
     var err error
-    if len(ths.ProxyAddress) > 0 {
+    if ths.UseProxy() {
         ret,err = rhttp.HttpProxyGet(address,ths.ProxyAddress,ths.ProxyPort,rhttp.HTTP_RETURN_TYPE_MAP)
         if err != nil {
             return nil,err

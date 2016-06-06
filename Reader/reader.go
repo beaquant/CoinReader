@@ -16,6 +16,7 @@ type ReaderDef struct {
     
     Orders   map[string][]*OrderBook
     
+    proxyUse     bool
     ProxyAddress string // proxy server address. If not set, proxy is not be used.
     ProxyPort    string // proxy server port. If not set, 8181 is default.
 }
@@ -40,7 +41,7 @@ func (ths *ReaderDef) Init(m, c string, v ... interface{}) {
         case string:
             ths.ProxyAddress = v[0].(string)
         default:
-            panic("First parameter(ProxyAddress) must be string!")
+            panic("The first parameter(ProxyAddress) must be of type string!")
         }
     }
     if vLen >= 2 {
@@ -48,7 +49,20 @@ func (ths *ReaderDef) Init(m, c string, v ... interface{}) {
         case string:
             ths.ProxyPort = v[1].(string)
         default:
-            panic("First parameter(ProxyPort) must be string!")
+            panic("The second parameter(ProxyPort) must be of type string!")
         }
     }
+    if len(ths.ProxyAddress) > 0 {
+        ths.proxyUse = true
+        if len(ths.ProxyPort) == 0 {
+            ths.ProxyPort = "8181"
+        }
+    } else {
+        ths.proxyUse = false
+    }
+}
+
+// UseProxy Return use or not use a proxy configuration.
+func (ths *ReaderDef) UseProxy() bool {
+    return ths.proxyUse
 }
