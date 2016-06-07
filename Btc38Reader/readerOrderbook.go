@@ -47,41 +47,6 @@ func (ths *B38Reader) readOrderBook(mon, coin string) (map[string]interface{},er
     return ret.(map[string]interface{}),nil
 }
 
-// PrintOrderBook print order datas to string
-func (ths *B38Reader) PrintOrderBook(length int) string {
-    if ths.Orders == nil {
-        return "> No datas!!\r\n"
-    }
-    
-    buyList,_ := ths.Orders[Reader.OrderBuyStringKey]
-    sellList,_ := ths.Orders[Reader.OrderSellStringKey]
-    
-    relLen := len(buyList)
-    relLenSell := len(sellList)
-    if relLen > relLenSell {
-        relLen = relLenSell
-    }
-    if length != -1 && length < relLen {
-        relLen = length
-    }
-    
-    ret := fmt.Sprintf("\r\n>  %s / %s Open orders (Records length = %d)\r\n",
-        ths.MonetaryName, ths.CoinName, relLen)
-    //> Price          Amount       Total             Price          Amount       Total
-    //      > 0.00001071    868.80058877    0.00930485              0.00001074      15933.88623733  0.17112994
-    ret += ">      ************ Buy ************                         ************ Sell ************ \r\n"
-    ret += "> Price         Amount          Total                   Price           Amount          Total\r\n"
-    
-    for index := 0; index < relLen; index++ {
-        bItm := buyList[index]
-        sItm := sellList[index]
-        ret += fmt.Sprintf("> %.8f\t%.8f\t%.8f\t\t%.8f\t%.8f\t%.8f\r\n", 
-            bItm.Price, bItm.Amount, bItm.Total,
-            sItm.Price, sItm.Amount, sItm.Total)
-    }
-    return ret
-}
-
 func (ths *B38Reader) decodeOrderBook(ret map[string]interface{}, ch chan bool) {
     if ret == nil {
         ch <- false

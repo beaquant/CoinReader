@@ -1,5 +1,9 @@
 package Reader
 
+import (
+    "fmt"
+)
+
 type ReaderInterface interface {
     ReadAll() bool
     ReadHistory() bool
@@ -65,4 +69,60 @@ func (ths *ReaderDef) Init(m, c string, v ... interface{}) {
 // UseProxy Return use or not use a proxy configuration.
 func (ths *ReaderDef) UseProxy() bool {
     return ths.proxyUse
+}
+
+
+// PrintOrderBook print order datas to string
+func (ths *ReaderDef) PrintOrderBook(length int) string {
+    if ths.Orders == nil {
+        return "> No datas!!\r\n"
+    }
+    
+    buyList,_ := ths.Orders[OrderBuyStringKey]
+    sellList,_ := ths.Orders[OrderSellStringKey]
+    
+    relLenBuy := len(buyList)
+    relLenSell := len(sellList)
+    
+    if length != -1{
+        if length < relLenBuy {
+            relLenBuy = length
+        }
+        if length < relLenSell {
+            relLenSell = length
+        }
+    }
+    
+    ret := fmt.Sprintf("\r\n>  %s / %s Open orders (Records length = %d)\r\n",
+        ths.MonetaryName, ths.CoinName, length)
+    //> Price          Amount       Total             Price          Amount       Total
+    //      > 0.00001071    868.80058877    0.00930485              0.00001074      15933.88623733  0.17112994
+    ret += ">      ************ Buy ************                         ************ Sell ************ \r\n"
+    ret += "> Price         Amount          Total                   Price           Amount          Total\r\n"
+    indexBuy := 0
+    indexSell := 0
+    for ; indexBuy < relLenBuy || indexSell < relLenSell; {
+        if (indexBuy < relLenBuy) && (indexSell < relLenSell) {
+            bItm := buyList[indexBuy]
+            sItm := sellList[indexSell]
+            ret += fmt.Sprintf("> %.8f\t%.8f\t%.8f\t\t%.8f\t%.8f\t%.8f\r\n", 
+                bItm.Price, bItm.Amount, bItm.Total,
+                sItm.Price, sItm.Amount, sItm.Total)
+        } else if (indexBuy >= relLenBuy) && (indexSell < relLenSell) {
+            sItm := sellList[indexSell]
+            //                  > 0.00001071    8.80058877    0.00930485              0.00001074      15933.88623733  0.17112994
+            ret += fmt.Sprintf("> -         \t-         \t-         \t\t%.8f\t%.8f\t%.8f\r\n", 
+                sItm.Price, sItm.Amount, sItm.Total)
+        } else if (indexBuy < relLenBuy) && (indexSell >= relLenSell) {
+            bItm := buyList[indexBuy]
+            //                  > 0.00001071    8.80058877    0.00930485              0.00001074      15933.88623733  0.17112994
+            ret += fmt.Sprintf("> %.8f\t%.8f\t%.8f\t\t-         \t-         \t-\r\n", 
+                bItm.Price, bItm.Amount, bItm.Total)
+        } else {
+            break
+        }
+        indexBuy++
+        indexSell++
+    }
+    return ret
 }
