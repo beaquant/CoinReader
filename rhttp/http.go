@@ -92,6 +92,32 @@ func HttpPostJson(address string, retType int, data []byte) (interface{}, error)
 	return GetResponseDecode(resp, retType)
 }
 
+// HttpClientPostForm
+// retType = 1  => map[string]interface{}
+// retType = 2  => []interface{}
+// retType = 3  => string
+func HttpClientPostForm(c *http.Client, address string, retType int, data string) (interface{}, error) {
+	resp, err := c.Post(address, "application/x-www-form-urlencoded", strings.NewReader(data))
+	if err != nil {
+		fmt.Printf("[ HttpClientPostForm() ]\r\n\tPost: %s\r\n\tData: %s\r\n", err, data)
+		return nil, err
+	}
+	return GetResponseDecode(resp, retType)
+}
+
+// HttpClientPostJson
+// retType = 1  => map[string]interface{}
+// retType = 2  => []interface{}
+// retType = 3  => string
+func HttpClientPostJson(c *http.Client, address string, retType int, data []byte) (interface{}, error) {
+	resp, err := c.Post(address, "application/json", strings.NewReader(string(data)))
+	if err != nil {
+		fmt.Printf("[ HttpClientPostJson() ]\r\n\tPost: %s\r\n\tData: %s\r\n", err, string(data))
+		return nil, err
+	}
+	return GetResponseDecode(resp, retType)
+}
+
 // GetResponseDecode
 // retType = 1  => map[string]interface{}
 // retType = 2  => []interface{}
@@ -105,7 +131,7 @@ func GetResponseDecode(resp *http.Response, retType int) (interface{}, error) {
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Printf(" ** HTTP Response ERROR\r\n\tReadAll: %s", err)
+		fmt.Printf(" ** HTTP Response ERROR\r\n\tReadAll: %s\r\n", err)
 		return nil, err
 	}
 
@@ -116,7 +142,8 @@ func GetResponseDecode(resp *http.Response, retType int) (interface{}, error) {
 		result := make(map[string]interface{})
 		err = json.Unmarshal(body, &result)
 		if err != nil {
-			fmt.Printf(" ** HTTP Response ERROR\r\n\tUnmarshal: %s", err)
+			fmt.Printf(" ** HTTP Response ERROR\r\n\tUnmarshal: %s\r\n", err)
+			fmt.Println("[ HTTPGet().body ]\r\n\t", string(body))
 			return nil, err
 		}
 		return result, nil
@@ -124,7 +151,8 @@ func GetResponseDecode(resp *http.Response, retType int) (interface{}, error) {
 		result := make([]interface{}, 0)
 		err = json.Unmarshal(body, &result)
 		if err != nil {
-			fmt.Printf(" ** HTTP Response ERROR\r\n\tUnmarshal: %s", err)
+			fmt.Printf(" ** HTTP Response ERROR\r\n\tUnmarshal: %s\r\n", err)
+			fmt.Println("[ HTTPGet().body ]\r\n\t", string(body))
 			return nil, err
 		}
 		return result, nil
