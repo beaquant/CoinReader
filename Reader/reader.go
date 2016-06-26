@@ -2,6 +2,7 @@ package Reader
 
 import (
     "fmt"
+    "sync"
 )
 
 type ReaderInterface interface {
@@ -18,7 +19,8 @@ type ReaderDef struct {
     MonetaryName string
     CoinName     string
     
-    Orders   map[string][]*OrderBook
+    Orders      map[string][]*OrderBook
+    OrderLocker *sync.Mutex
     
     proxyUse     bool
     ProxyAddress string // proxy server address. If not set, proxy is not be used.
@@ -38,6 +40,7 @@ func (ths *ReaderDef) Init(m, c string, v ... interface{}) {
     ths.Orders = make(map[string][]*OrderBook)
     ths.Orders[OrderBuyStringKey] = nil
     ths.Orders[OrderSellStringKey] = nil
+    ths.OrderLocker = new(sync.Mutex)
     
     vLen := len(v)
     if vLen >= 1 {

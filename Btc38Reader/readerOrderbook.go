@@ -79,7 +79,9 @@ func (ths *B38Reader) decodeSellOB(flag *sync.WaitGroup, list []interface{}) {
     defer flag.Done()
     relLen := len(list)
     sellList := make([]*Reader.OrderBook, relLen)
+    ths.OrderLocker.Lock()
     ths.Orders[Reader.OrderSellStringKey] = sellList
+    ths.OrderLocker.Unlock()
 
     for index := 0; index < relLen; index++ {
         tmpMap := (list[index]).(map[string]interface{})
@@ -101,7 +103,9 @@ func (ths *B38Reader) decodeBuyOB(flag *sync.WaitGroup, list []interface{}) {
     defer flag.Done()
     relLen := len(list)
     buyList := make([]*Reader.OrderBook, relLen)
+    ths.OrderLocker.Lock()
     ths.Orders[Reader.OrderBuyStringKey] = buyList
+    ths.OrderLocker.Unlock()
 
     for index := 0; index < relLen; index++ {
         tmpMap := (list[index]).(map[string]interface{})
