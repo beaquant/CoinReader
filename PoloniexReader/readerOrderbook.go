@@ -43,11 +43,14 @@ func (ths *PReader) decodeOrderBook(ret map[string]interface{}) bool {
     asks,_ := ret["asks"]
     bids,_ := ret["bids"]
     f := new(sync.WaitGroup)
-    f.Add(2)
-    go ths.decodeAsksOB(f, asks.([]interface{}))
-    go ths.decodeBidsOB(f, bids.([]interface{}))
-    f.Wait()
-    return true
+    if asks != nil && bids != nil {
+        f.Add(2)
+        go ths.decodeAsksOB(f, asks.([]interface{}))
+        go ths.decodeBidsOB(f, bids.([]interface{}))
+        f.Wait()
+        return true
+    }
+    return false
 }
 
 func (ths *PReader) decodeAsksOB(flag *sync.WaitGroup, list []interface{}) {
